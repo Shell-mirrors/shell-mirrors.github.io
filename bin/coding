@@ -1,0 +1,11 @@
+#!/bin/bash
+if [ -z "$(expect -v | grep "expect version [0-9]\.[0-9]\{1,3\}")" ];then
+	apt-get install -y expect
+fi
+echo user=coding > /tmp/logininfo.conf
+if [ $UID -ne 4999 ];then
+	clear
+	login-script
+else
+	echo '已经是coding用户了无需重复登录...'
+fi

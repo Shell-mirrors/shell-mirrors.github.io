@@ -1,0 +1,6 @@
+#!/bin/bash
+. /tmp/logininfo.conf
+rm -rf /tmp/logininfo.conf
+if [ ! -z "$user" ];then
+	ssh $user@localhost
+fi
