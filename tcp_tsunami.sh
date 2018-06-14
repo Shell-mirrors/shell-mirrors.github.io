@@ -100,7 +100,7 @@ function centos_swap_kernel(){
 }
 
 function ubuntu_debian_swap_kernel(){
-	echo 乌班图和德班正在制作中...
+	echo 乌班图和德班版本正在制作中...
 	back_menu
 }
 
@@ -135,7 +135,7 @@ function centos_install_bbr(){
 }
 
 function ubuntu_debian_install_bbr(){
-	echo 乌班图和德班正在制作中...
+	echo 乌班图和德班版本正在制作中...
 	back_menu
 }
 
