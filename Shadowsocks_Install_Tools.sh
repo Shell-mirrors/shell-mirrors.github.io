@@ -270,7 +270,7 @@ function CentOS6_Image(){
 	CENTOS6_KERNEL=http://vault.centos.org/6.6/updates/x86_64/Packages
 	KERNEL_DIR=/Packages/kernel
 	Kernel=(kernel-2.6.32-504.3.3.el6.x86_64.rpm kernel-devel-2.6.32-504.3.3.el6.x86_64.rpm kernel-firmware-2.6.32-504.3.3.el6.noarch.rpm kernel-headers-2.6.32-504.3.3.el6.x86_64.rpm)
-	default_image=$(rpm-qa | grep "^kernel-2.6.32-504.3.3.el6.x86_64")
+	default_image=$(rpm -qa | grep "^kernel-2.6.32-504.3.3.el6.x86_64")
 	if [ ! -e $KERNEL_DIR ];then
 		mkdir -p $KERNEL_DIR
 	fi
