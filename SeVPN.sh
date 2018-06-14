@@ -1,7 +1,7 @@
 #!/bin/bash
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
-mv sevpn.sh /bin/sevpn
+mv $0 /bin/sevpn
 chmod 777 /bin/sevpn
 install_proxy='http://vpn.xmxin.top/Other';
 clear
