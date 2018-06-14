@@ -46,6 +46,10 @@ done
 
 bit=$(uname -m)
 
+echo 当前系统:$OSED
+sleep 2
+clear
+
 function swap_kernel(){
 	if [ "$OSED" == "CentOS" ];then
 		centos_swap_kernel
