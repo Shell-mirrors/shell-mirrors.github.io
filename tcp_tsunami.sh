@@ -131,7 +131,7 @@ function centos_install_bbr(){
 	echo "net.ipv4.tcp_congestion_control=tsunami" >> /etc/sysctl.conf
 	sysctl -p
 	isrun=$(sysctl net.ipv4.tcp_congestion_control | grep tsunami)
-	if [ ! -z "$isrun"];then
+	if [ ! -z "$isrun" ];then
 		echo 安装成功，bbr正在运行！
 	else
 		echo 安装失败！
