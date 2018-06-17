@@ -2,15 +2,23 @@
 
 OSPATH="/etc/os-release /etc/lsb-release /etc/centos-release /etc/system-release"
 OS="CentOS Ubuntu Debian"
+GREEN="\033[36m"
+RED="\033[31m"
+YELLOW="\033[33m"
+BLIE="\033[34m"
+PINK="\033[35m"
+PLAIN="\033[0m"
 
 function menu(){
 	echo "		菜单"
 	echo ---------------------------------------
-
+	echo
 	echo "	1、替换内核"
 	echo "	2、安装BBR"
 	echo "	q、退出"
-
+	echo
+	run_state
+	echo
 	echo ---------------------------------------
 	echo -n "请选择:"
 	read option
@@ -134,17 +142,22 @@ function centos_install_bbr(){
 	echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
 	echo "net.ipv4.tcp_congestion_control=tsunami" >> /etc/sysctl.conf
 	sysctl -p
-	isrun=$(sysctl net.ipv4.tcp_congestion_control | grep tsunami)
-	if [ ! -z "$isrun" ];then
-		echo 安装成功，BBR正在运行！
-	else
-		echo 安装失败！
-	fi
+	echo "安装成功!"
+	run_state
 }
 
 function ubuntu_debian_install_bbr(){
 	echo 乌班图和德班版本正在制作中...
 	back_menu
+}
+
+function run_state(){
+	isrun=$(sysctl net.ipv4.tcp_congestion_control | grep tsunami)
+	if [ ! -z "$isrun" ];then
+		echo -e "	BBR运行状态：[ ${GREEN}OK$PLAIN ]"
+	else
+		echo -e "	BBR运行状态：[ ${RED}FALSE$PLAIN ]"
+	fi
 }
 
 menu
