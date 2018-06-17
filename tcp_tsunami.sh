@@ -115,6 +115,7 @@ function centos_swap_kernel(){
 		return 1
 	fi
 	echo 换内核成功，请重启系统！
+	back_menu
 }
 
 function ubuntu_debian_swap_kernel(){
@@ -152,8 +153,9 @@ function centos_install_bbr(){
 		echo "net.ipv4.tcp_congestion_control=tsunami" >> /etc/sysctl.conf
 	fi
 	sysctl -p
+	echo
 	echo "安装成功!"
-	run_state
+	back_menu
 }
 
 function ubuntu_debian_install_bbr(){
