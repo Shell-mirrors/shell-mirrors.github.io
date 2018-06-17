@@ -61,9 +61,21 @@ do
 	done
 done
 
-bit=$(uname -m)
+release6=$(grep "CentOS.* 6\.[0-9]" /etc/centos-release)
+release7=$(grep "CentOS.* 7\.[0-9]" /etc/centos-release)
+if [ ! -z "$release6" ];then
+	release="el6"
+	version=6
+elif [ ! -z "$release7" ];then
+	release="el7"
+	version=7
+else
+	echo "不支持的发行版本..."
+	return 1
+fi
 
-echo 当前系统:$OSED
+bit=$(uname -m)
+echo "当前系统:$OSED$version"
 sleep 2
 clear
 # 检查系统
@@ -78,16 +90,6 @@ function swap_kernel(){
 
 # 替换centos6或centos7内核
 function centos_swap_kernel(){
-	release6=$(grep "CentOS.* 6\.[0-9]" /etc/centos-release)
-	release7=$(grep "CentOS.* 7\.[0-9]" /etc/centos-release)
-	if [ ! -z "$release6" ];then
-		release="el6"
-	elif [ ! -z "$release7" ];then
-		release="el7"
-	else
-		echo "不支持的发行版本..."
-		return 1
-	fi
 	if [ ! -e "/Packages" ];then
 		mkdir /Packages
 	fi
@@ -98,8 +100,6 @@ function centos_swap_kernel(){
 		wget $downloadurl$i -O /Packages/$i
 	done
 	yum remove -y glibc-headers
-	if [ $? != 0];then
-	fi
 	rpm -ivh /Packages/*rpm
 	if [ $? != 0];then
 		echo "未知错误,替换失败！"
@@ -132,13 +132,13 @@ function install_bbr(){
 
 # centos安装BBR
 function centos_install_bbr(){
+	echo 4.13.10-1.$release.elrepo.$bit
 	if [ "$(uname -r)" != "4.13.10-1.$release.elrepo.$bit" ];then
 		echo "请替换BBR可用内核重启后再安装BBR!"
 		back_menu
 	fi
 	yum groupinstall -y "Development"
 	yum install -y git
-	rm -rf tcp_tsunami
 	git clone https://github.com/liberal-boy/tcp_tsunami
 	cd tcp_tsunami
 	echo "obj-m:=tcp_tsunami.o" > Makefile
