@@ -99,11 +99,6 @@ function centos_swap_kernel(){
 	done
 	yum remove -y glibc-headers
 	if [ $? != 0];then
-		echo "未知错误"
-	fi
-	rpm -e $(rpm -qa | grep "kernel-headers")
-	if [ $? != 0];then
-		echo "未知错误"
 	fi
 	rpm -ivh /Packages/*rpm
 	if [ $? != 0];then
@@ -151,8 +146,11 @@ function centos_install_bbr(){
 	cp -rf ./tcp_tsunami.ko /lib/modules/$(uname -r)/kernel/net/ipv4
 	depmod -a
 	modprobe tcp_tsunami
-	echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
-	echo "net.ipv4.tcp_congestion_control=tsunami" >> /etc/sysctl.conf
+	bbr_sysctl=$(egrep "net.core.default_qdisc=fq|net.ipv4.tcp_congestion_control=tsunami" /etc/sysctl.conf)
+	if [ -z "$bbr_sysctl" ];then
+		echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
+		echo "net.ipv4.tcp_congestion_control=tsunami" >> /etc/sysctl.conf
+	fi
 	sysctl -p
 	echo "安装成功!"
 	run_state
