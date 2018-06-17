@@ -132,7 +132,6 @@ function install_bbr(){
 
 # centos安装BBR
 function centos_install_bbr(){
-	echo 4.13.10-1.$release.elrepo.$bit
 	if [ "$(uname -r)" != "4.13.10-1.$release.elrepo.$bit" ];then
 		echo "请替换BBR可用内核重启后再安装BBR!"
 		back_menu
