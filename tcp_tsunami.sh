@@ -114,10 +114,17 @@ function centos_swap_kernel(){
 		echo "未知错误,替换失败！"
 		return 1
 	fi
-	echo
-	echo 换内核成功，请重启系统！
-	echo
-	back_menu
+	if [ "$(uname -r)" == "4.13.10-1.$release.elrepo.$bit" ];then
+		echo
+		echo 换内核成功，请重启系统！
+		echo
+		back_menu
+	else
+		echo
+		echo 换内核失败，不要为为什么，可能是人丑吧！
+		echo
+		back_menu
+	fi
 }
 
 function ubuntu_debian_swap_kernel(){
