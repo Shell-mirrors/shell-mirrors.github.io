@@ -117,6 +117,10 @@ function install_bbr(){
 }
 
 function centos_install_bbr(){
+	if [ "$(uname -r)" != "4.13.10-1.$release.elrepo.$bit" ];then
+		echo "请替换BBR可用内核重启后再安装BBR!"
+		back_menu
+	fi
 	yum groupinstall -y "Development"
 	yum install -y git
 	git clone https://github.com/liberal-boy/tcp_tsunami
