@@ -2,7 +2,7 @@
 
 OSPATH="/etc/os-release /etc/lsb-release /etc/centos-release /etc/system-release"
 OS="CentOS Ubuntu Debian"
-GREEN="\033[36m"
+GREEN="\033[32m"
 RED="\033[31m"
 YELLOW="\033[33m"
 BLIE="\033[34m"
@@ -154,9 +154,9 @@ function ubuntu_debian_install_bbr(){
 function run_state(){
 	isrun=$(sysctl net.ipv4.tcp_congestion_control | grep tsunami)
 	if [ ! -z "$isrun" ];then
-		echo -e "	BBR运行状态：[ ${GREEN}OK$PLAIN ]"
+		echo -e "	BBR运行状态：[ $GREEN ok $PLAIN ]"
 	else
-		echo -e "	BBR运行状态：[ ${RED}FALSE$PLAIN ]"
+		echo -e "	BBR运行状态：[ ${RED}fail$PLAIN ]"
 	fi
 }
 
