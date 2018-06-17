@@ -109,7 +109,7 @@ function centos_swap_kernel(){
 	grub2-mkconfig -o /boot/grub2/grub.cfg && grub2-set-default 0
 	if [ $? != 0 ];then
 		echo "未知错误,替换失败！"
-		return 1
+		return 2
 	fi
 	if [ ! -z "$(rpm -qa | grep "kernel-ml-4.13.10-1.$release.elrepo.$bit")" ];then
 		echo
@@ -118,7 +118,7 @@ function centos_swap_kernel(){
 		back_menu
 	else
 		echo
-		echo 换内核失败，不要为为什么，可能是人丑吧！
+		echo 换内核失败，不要问为什么，可能是人丑吧！
 		echo
 		back_menu
 	fi
