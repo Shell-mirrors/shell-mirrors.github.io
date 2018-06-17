@@ -114,7 +114,9 @@ function centos_swap_kernel(){
 		echo "未知错误,替换失败！"
 		return 1
 	fi
+	echo
 	echo 换内核成功，请重启系统！
+	echo
 	back_menu
 }
 
@@ -155,6 +157,7 @@ function centos_install_bbr(){
 	sysctl -p
 	echo
 	echo "安装成功!"
+	echo
 	back_menu
 }
 
