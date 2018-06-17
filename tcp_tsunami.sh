@@ -138,6 +138,7 @@ function centos_install_bbr(){
 	fi
 	yum groupinstall -y "Development"
 	yum install -y git
+	rm -rf tcp_tsunami
 	git clone https://github.com/liberal-boy/tcp_tsunami
 	cd tcp_tsunami
 	echo "obj-m:=tcp_tsunami.o" > Makefile
