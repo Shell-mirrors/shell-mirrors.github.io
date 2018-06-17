@@ -69,9 +69,6 @@ if [ ! -z "$release6" ];then
 elif [ ! -z "$release7" ];then
 	release="el7"
 	version=7
-else
-	echo "不支持的发行版本..."
-	return 1
 fi
 
 bit=$(uname -m)
