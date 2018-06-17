@@ -90,6 +90,10 @@ function swap_kernel(){
 
 # 替换centos6或centos7内核
 function centos_swap_kernel(){
+	if [ "$(uname -r)" == "4.13.10-1.$release.elrepo.$bit" ];then
+		echo "你的内核已符合要求，无需替换!"
+		back_menu
+	fi
 	if [ ! -e "/Packages" ];then
 		mkdir /Packages
 	fi
@@ -101,20 +105,13 @@ function centos_swap_kernel(){
 	done
 	yum remove -y glibc-headers
 	rpm -ivh /Packages/*rpm
-	if [ $? != 0 ];then
-		echo "未知错误,替换失败！"
-		return 1
-	fi
 	yum install -y glibc-headers glibc-devel gcc
-	if [ $? != 0 ];then
-		echo "未知错误"
-	fi
 	grub2-mkconfig -o /boot/grub2/grub.cfg && grub2-set-default 0
 	if [ $? != 0 ];then
 		echo "未知错误,替换失败！"
 		return 1
 	fi
-	if [ "$(uname -r)" == "4.13.10-1.$release.elrepo.$bit" ];then
+	if [ ! -z "$(rpm -qa | grep "kernel-ml-4.13.10-1.$release.elrepo.$bit")" ];then
 		echo
 		echo 换内核成功，请重启系统！
 		echo
@@ -146,7 +143,8 @@ function centos_install_bbr(){
 		echo "请替换BBR可用内核重启后再安装BBR!"
 		back_menu
 	fi
-	yum groupinstall -y "Development"
+	yum groupremove -y "Development Tools"
+	yum groupinstall -y "Development Tools"
 	yum install -y git
 	git clone https://github.com/liberal-boy/tcp_tsunami
 	cd tcp_tsunami
