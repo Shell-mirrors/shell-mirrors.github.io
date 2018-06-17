@@ -146,6 +146,7 @@ function centos_install_bbr(){
 	yum groupremove -y "Development Tools"
 	yum groupinstall -y "Development Tools"
 	yum install -y git
+	rm -rf tcp_tsunami
 	git clone https://github.com/liberal-boy/tcp_tsunami
 	cd tcp_tsunami
 	echo "obj-m:=tcp_tsunami.o" > Makefile
@@ -174,7 +175,8 @@ function ubuntu_debian_install_bbr(){
 # 检查BBR运行状态
 function run_state(){
 	isrun=$(sysctl net.ipv4.tcp_congestion_control | grep tsunami)
-	if [ ! -z "$isrun" ];then
+	isrun2=$(lsmod | grep "tcp_tsunami")
+	if [ ! -z "$isrun" ] && [ ! -z "$isrun2" ];then
 		echo -e "	BBR运行状态：[ $GREEN ok $PLAIN ]"
 	else
 		echo -e "	BBR运行状态：[ ${RED}fail$PLAIN ]"
