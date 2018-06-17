@@ -1,5 +1,13 @@
 #!/bin/bash
 
+######################################
+#	脚本名:	tcp_tsunami.sh
+#	用途:		替换BBR可用内核和安装BBR
+#	制作时间:2018-6-17 9:45	
+#
+#		作者：by 西门信
+######################################
+
 OSPATH="/etc/os-release /etc/lsb-release /etc/centos-release /etc/system-release"
 OS="CentOS Ubuntu Debian"
 GREEN="\033[32m"
