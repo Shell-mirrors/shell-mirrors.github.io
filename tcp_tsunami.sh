@@ -37,6 +37,7 @@ function back_menu(){
 	menu
 }
 
+# 检查系统
 for i in $OSPATH
 do
 	if [ ! -e $i ];then
@@ -57,6 +58,7 @@ bit=$(uname -m)
 echo 当前系统:$OSED
 sleep 2
 clear
+# 检查系统
 
 function swap_kernel(){
 	if [ "$OSED" == "CentOS" ];then
@@ -66,6 +68,7 @@ function swap_kernel(){
 	fi
 }
 
+# 替换centos6或centos7内核
 function centos_swap_kernel(){
 	release6=$(grep "CentOS.* 6\.[0-9]" /etc/centos-release)
 	release7=$(grep "CentOS.* 7\.[0-9]" /etc/centos-release)
@@ -124,6 +127,7 @@ function install_bbr(){
 	fi
 }
 
+# centos安装BBR
 function centos_install_bbr(){
 	if [ "$(uname -r)" != "4.13.10-1.$release.elrepo.$bit" ];then
 		echo "请替换BBR可用内核重启后再安装BBR!"
@@ -151,6 +155,7 @@ function ubuntu_debian_install_bbr(){
 	back_menu
 }
 
+# 检查BBR运行状态
 function run_state(){
 	isrun=$(sysctl net.ipv4.tcp_congestion_control | grep tsunami)
 	if [ ! -z "$isrun" ];then
