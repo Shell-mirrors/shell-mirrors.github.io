@@ -105,7 +105,7 @@ function centos_swap_kernel(){
 		echo "未知错误,替换失败！"
 		return 1
 	fi
-	yum install -y glibc-headers
+	yum install -y glibc-headers glibc-devel gcc
 	if [ $? != 0 ];then
 		echo "未知错误"
 	fi
