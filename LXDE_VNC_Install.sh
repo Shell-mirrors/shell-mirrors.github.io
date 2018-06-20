@@ -140,6 +140,7 @@ function CentOS6_Install(){
 	SetVnc
 	yum update -y
 	yum groupinstall -y "X Window System" "Desktop"
+	yum groupinstall -y "Chinese Support"
 	yum install -y tigervnc-server tigervnc firefox expect curl
 	echo '	VNCSERVERS="1:root"
 	VNCSERVERARGS[1]="-geometry 1366x768 -alwaysshared -depth 24"' >>/etc/sysconfig/vncservers
@@ -161,6 +162,7 @@ function CentOS7_Install(){
 	SetVnc
 	yum update -y
 	yum groupinstall -y "X Window System" "Desktop"
+	yum groupinstall -y "Chinese Support"
 	yum install -y tigervnc-server tigervnc firefox expect curl
 	echo '	VNCSERVERS="1:root"
 	VNCSERVERARGS[1]="-geometry 1366x768 -alwaysshared -depth 24"' >>/etc/sysconfig/vncservers
