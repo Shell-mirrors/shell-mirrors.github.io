@@ -104,7 +104,14 @@ function centos_swap_kernel(){
 	yum remove -y glibc-headers
 	rpm -ivh /Packages/*rpm
 	yum install -y glibc-headers glibc-devel gcc
-	grub2-mkconfig -o /boot/grub2/grub.cfg && grub2-set-default 0
+	if [ $version == 6 ];then
+		sed -i "s/^default=[0-9]+/default=0/g" /etc/grub.conf
+	elif [ $version == 7 ];then
+		grub2-mkconfig -o /boot/grub2/grub.cfg && grub2-set-default 0
+	else
+		echo "未知错误,替换失败！"
+		return 2
+	fi
 	if [ $? != 0 ];then
 		echo "未知错误,替换失败！"
 		return 2
