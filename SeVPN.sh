@@ -299,7 +299,7 @@ EOF
 function mproxy_set(){
 cd /bin/
 Bit=$(uname -m)
-if [ "$Bit" == "x84_64" ]
+if [ "$Bit" == "x84_64" ];then
 	bit="x86_64"
 else
 	bit="x86"
