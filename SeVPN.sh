@@ -686,10 +686,10 @@ disablemp_port(){
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 lsdismp="`netstat -ntlp | grep "tcp.*[0-9]\{1,5\}.*\/tinyproxy" | awk '{printf $4 "\t" $7 "\n"}' | grep "0.0.0.0" | cut -d ":" -f 2`"
-echo -e "设置需要关闭的TinyProxy代理端口 [1-65535]:"
 echo -e "当前开启的TinyProxy代理端口:
 端口    PID    进程
 \e[1;31m${lsdismp}\e[0m"
+echo -e "设置需要关闭的TinyProxy代理端口 [1-65535]:"
 read disablempport
         echo
         echo "---------------------------"
