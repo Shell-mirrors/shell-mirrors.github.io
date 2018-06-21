@@ -312,7 +312,7 @@ rm -rf tinyproxy$bit.zip
 chmod 777 tinyproxy
 cp /bin/tinyproxy.conf /bin/proxy_${PORT}.conf
 sed -i "s/Port PORT/Port $PORT/g" /bin/proxy_${PORT}.conf
-/bin/tinyproxy -c proxy${PORT}.conf
+/bin/tinyproxy -c /bin/proxy_${PORT}.conf
 }
 
 
@@ -621,7 +621,7 @@ back_memu
 function repair_sevpn(){
 cd /root/>/dev/null 2>&1
 killall tinyproxy >/dev/null 2>&1
-/bin/tinyproxy -c proxy_${PORT}.conf &>/dev/null 2>&1
+/bin/tinyproxy -c /bin/proxy_${PORT}.conf &>/dev/null 2>&1
 cd /root/vpnserver>/dev/null 2>&1
 ./vpnserver stop>/dev/null 2>&1
 ./vpnserver start>/dev/null 2>&1
