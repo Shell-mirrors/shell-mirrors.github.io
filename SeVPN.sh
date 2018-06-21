@@ -3,7 +3,7 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 mv $0 /bin/sevpn
 chmod 777 /bin/sevpn
-install_proxy='http://vpn.xmxin.top/Other';
+install_proxy='http://script.xmxin.top/other';
 clear
 cd /root/
 function check_ip(){
@@ -298,11 +298,17 @@ EOF
         }
 function mproxy_set(){
 cd /bin/
-wget ${install_proxy}/tinyproxyX64.zip >/dev/null 2>&1
+Bit=$(uname -m)
+if [ "$Bit" == "x84_64" ]
+	bit="x86_64"
+else
+	bit="x86"
+fi
+wget ${install_proxy}/tinyproxy$bit.zip >/dev/null 2>&1
 rm -rf tinyproxy
 rm -rf tinyproxy.conf
-unzip tinyproxyX64.zip
-rm -rf tinyproxyX64.zip
+unzip tinyproxy$bit.zip
+rm -rf tinyproxy$bit.zip
 chmod 777 tinyproxy
 cp /bin/tinyproxy.conf /bin/proxy_${PORT}.conf
 sed -i "s/Port PORT/Port $PORT/g" /bin/proxy_${PORT}.conf
