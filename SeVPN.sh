@@ -297,8 +297,8 @@ EOF
     back_memu
         }
 function mproxy_set(){
-cd /bin/
-if [ $(uname -m) == x84_64 ];then
+cd /bin
+if [ $(getconf WORD_BIT) = '32' ] && [ $(getconf LONG_BIT) = '64' ] ; then
 	bit="x86_64"
 else
 	bit="x86"
