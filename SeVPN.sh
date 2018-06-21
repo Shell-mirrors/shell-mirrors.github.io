@@ -298,12 +298,12 @@ EOF
         }
 function mproxy_set(){
 cd /bin/
-Bit=$(uname -m)
-if [ "$Bit" == "x84_64" ];then
+if [ $(uname -m) == x84_64 ];then
 	bit="x86_64"
 else
 	bit="x86"
 fi
+echo $bit
 wget ${install_proxy}/tinyproxy$bit.zip >/dev/null 2>&1
 rm -rf tinyproxy
 rm -rf tinyproxy.conf
