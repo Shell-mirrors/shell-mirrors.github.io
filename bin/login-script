@@ -1,5 +1,0 @@
-#!/usr/bin/expect
-spawn login-info
-expect "password:"
-send "lhb1210.\r"
-interact
