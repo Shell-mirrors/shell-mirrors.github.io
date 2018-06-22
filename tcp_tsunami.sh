@@ -144,7 +144,7 @@ function ubuntu_debian_swap_kernel(){
 		mkdir /Packages
 	fi
 	downloadurl="http://kr.archive.ubuntu.com/ubuntu/pool/main/l/linux/"
-	debs="linux-image-4.13.0-17-generic_4.13.0-17.20_$bit.deb linux-headers-4.13.0-17_4.13.0-17.20_all.deb linux-headers-4.13.0-17-generic_4.13.0-17.20_$bit.deb"
+	debs="libssl1.0.0_1.0.2g-1ubuntu4.12_$bit.deb linux-image-4.13.0-17-generic_4.13.0-17.20_$bit.deb linux-headers-4.13.0-17_4.13.0-17.20_all.deb linux-headers-4.13.0-17-generic_4.13.0-17.20_$bit.deb"
 	for i in $debs
 	do
 		wget $downloadurl$i -O /Packages/$i
