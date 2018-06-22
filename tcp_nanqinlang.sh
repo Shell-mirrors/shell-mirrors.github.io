@@ -178,7 +178,7 @@ function install_bbr(){
 
 # centos安装BBR
 function centos_install_bbr(){
-	$bit=$(uname -m)
+	bit=$(uname -m)
 	if [ "$(uname -r)" != "4.13.10-1.$release.elrepo.$bit" ];then
 		echo "请替换BBR可用内核重启后再安装BBR!"
 		back_menu
@@ -187,7 +187,6 @@ function centos_install_bbr(){
 	yum groupremove -y "Development Tools"
 	yum groupinstall -y "Development Tools"
 	yum install -y git zip unzip
-	rm -rf general
 	git clone https://github.com/liberal-boy/tcp_tsunami
 	cd tcp_tsunami
 	echo "obj-m:=tcp_tsunami.o" > Makefile
