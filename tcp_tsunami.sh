@@ -143,8 +143,10 @@ function ubuntu_debian_swap_kernel(){
 	if [ ! -e /Packages ];then
 		mkdir /Packages
 	fi
+	wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.0.0_1.0.2g-1ubuntu4.12_$bit.deb -O /Packages/libssl1.0.0_1.0.2g-1ubuntu4.12_$bit.deb
+	dpkg -i /Packages/libssl1.0.0_1.0.2g-1ubuntu4.12_$bit.deb
 	downloadurl="http://kr.archive.ubuntu.com/ubuntu/pool/main/l/linux/"
-	debs="libssl1.0.0_1.0.2g-1ubuntu4.12_$bit.deb linux-image-4.13.0-17-generic_4.13.0-17.20_$bit.deb linux-headers-4.13.0-17_4.13.0-17.20_all.deb linux-headers-4.13.0-17-generic_4.13.0-17.20_$bit.deb"
+	debs="linux-image-4.13.0-17-generic_4.13.0-17.20_$bit.deb linux-headers-4.13.0-17_4.13.0-17.20_all.deb linux-headers-4.13.0-17-generic_4.13.0-17.20_$bit.deb"
 	for i in $debs
 	do
 		wget $downloadurl$i -O /Packages/$i
