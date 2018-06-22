@@ -152,7 +152,7 @@ function ubuntu_debian_swap_kernel(){
 	done
 	installed=$(dpkg -l | egrep "linux-image-4.13.0-17-generic")
 	installed_headers=$(dpkg -l | egrep "linux-headers-4.13.0-17")
-	if [ ! -z "$installed" ] && [ ! -z "$install_headers" ];then
+	if [ ! -z "$installed" ] && [ ! -z "$installed_headers" ];then
 		echo 内核安装成功
 	else
 		echo 内核安装失败
