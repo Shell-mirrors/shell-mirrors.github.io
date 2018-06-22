@@ -221,6 +221,8 @@ function ubuntu_debian_install_bbr(){
 	else
 		Makefile="Makefile-Debian7or8"
 	fi
+	sleep 1
+	echo 下载资源中
 	wget http://script.xmxin.top/3.4.5.1.zip
 	unzip 3.4.5.1.zip
 	rm -rf 3.4.5.1.zip
