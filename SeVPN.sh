@@ -454,6 +454,7 @@ cp /root/vpnserver/udp53端口.ovpn /root/vpnserver/assets/udp53端口.ovpn >/de
 cp /root/vpnserver/udp137端口.ovpn /root/vpnserver/assets/udp137端口.ovpn >/dev/null 2>&1
 cp /root/vpnserver/udp138端口.ovpn /root/vpnserver/assets/udp138端口.ovpn >/dev/null 2>&1
 cp /root/vpnserver/HTTP转接.ovpn /root/vpnserver/assets/HTTP转接.ovpn >/dev/null 2>&1
+cp /root/vpnserver/四川联通.ovpn /root/vpnserver/assets/四川联通.ovpn >/dev/null 2>&1
 sleep 1
 zip -r sss.apk assets lib META-INF res classes.dex resources.arsc AndroidManifest.xml >/dev/null 2>&1
 sleep 1
