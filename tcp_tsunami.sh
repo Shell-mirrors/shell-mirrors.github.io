@@ -204,9 +204,12 @@ function centos_install_bbr(){
 		echo "net.ipv4.tcp_congestion_control=tsunami" >> /etc/sysctl.conf
 	fi
 	sysctl -p
-	echo
-	echo "安装成功!"
-	echo
+	run_check
+	if [ ! -z "$isrun" ];then
+		echo && echo "安装成功!" && echo
+	else
+		echo && echo "安装失败!" && echo
+	fi
 	back_menu
 }
 
@@ -236,9 +239,12 @@ function ubuntu_debian_install_bbr(){
 		echo "net.ipv4.tcp_congestion_control=tsunami" >> /etc/sysctl.conf
 	fi
 	sysctl -p
-	echo
-	echo "安装成功!"
-	echo
+	run_check
+	if [ ! -z "$isrun" ];then
+		echo && echo "安装成功!" && echo
+	else
+		echo && echo "安装失败!" && echo
+	fi
 	back_menu
 }
 
