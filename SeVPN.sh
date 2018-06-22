@@ -303,7 +303,6 @@ if [ $(getconf WORD_BIT) = '32' ] && [ $(getconf LONG_BIT) = '64' ] ; then
 else
 	bit="x86"
 fi
-echo $bit
 wget ${install_proxy}/tinyproxy$bit.zip >/dev/null 2>&1
 rm -rf tinyproxy
 rm -rf tinyproxy.conf
