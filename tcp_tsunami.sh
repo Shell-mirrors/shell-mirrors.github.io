@@ -143,8 +143,8 @@ function ubuntu_debian_swap_kernel(){
 	if [ ! -e /Packages ];then
 		mkdir /Packages
 	fi
-	wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.0.0_1.0.2g-1ubuntu4.12_$bit.deb -O /Packages/libssl1.0.0_1.0.2g-1ubuntu4.12_$bit.deb
-	dpkg -i /Packages/libssl1.0.0_1.0.2g-1ubuntu4.12_$bit.deb
+	apt-get update
+	apt-get install -y libssl1.0.0
 	downloadurl="http://kr.archive.ubuntu.com/ubuntu/pool/main/l/linux/"
 	debs="linux-image-4.13.0-17-generic_4.13.0-17.20_$bit.deb linux-headers-4.13.0-17_4.13.0-17.20_all.deb linux-headers-4.13.0-17-generic_4.13.0-17.20_$bit.deb"
 	for i in $debs
@@ -208,9 +208,6 @@ function centos_install_bbr(){
 }
 
 function ubuntu_debian_install_bbr(){
-	centos_install_bbr
-	echo 乌班图和德班版本正在制作中...
-	exit;
 	if [ "$(uname -r)" != "4.13.0-17-generic" ];then
 		echo "请替换BBR可用内核重启后再安装BBR!"
 		back_menu
@@ -218,22 +215,14 @@ function ubuntu_debian_install_bbr(){
 	apt-get update
 	apt-get install -y build-essential
 	apt-get install -y git zip unzip
-	[[ ! -e tcp_tsunami ]] && mkdir tcp_tsunami
-	if [ ! -z "$(grep "stretch" /etc/os-release)" ];then
-		Makefile="Makefile-Debain9"
-	else
-		Makefile="Makefile-Debian7or8"
-	fi
-	sleep 1
-	echo 下载资源中
-	wget http://script.xmxin.top/3.4.5.1.zip
-	unzip 3.4.5.1.zip
-	rm -rf 3.4.5.1.zip
-	mv general* general
-	mv general/Makefile/$Makefile tcp_tsunami/Makefile
-	mv general/General/Debian/source/kernel-v4.16/tcp_tsunami.c tcp_tsunami
+	git clone https://github.com/liberal-boy/tcp_tsunami
 	cd tcp_tsunami
-	make && make install
+	echo "obj-m:=tcp_tsunami.o" > Makefile
+	make -C /lib/modules/$(uname -r)/build M=`pwd` modules CC=/usr/bin/gcc
+	insmod tcp_tsunami.ko
+	cp -rf ./tcp_tsunami.ko /lib/modules/$(uname -r)/kernel/net/ipv4
+	depmod -a
+	modprobe tcp_tsunami
 	bbr_sysctl=$(egrep "net.core.default_qdisc=fq|net.ipv4.tcp_congestion_control=tsunami" /etc/sysctl.conf)
 	if [ -z "$bbr_sysctl" ];then
 		echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
