@@ -130,6 +130,8 @@ function centos_swap_kernel(){
 }
 
 function ubuntu_debian_swap_kernel(){
+	echo 乌班图和德班版本正在制作中...
+	exit;
 	Bit=$(getconf WORD_BIT)
 	if [ $Bit == 32 ] || [ $Bit == 64 ];then
 		bit="amd64"
@@ -186,20 +188,18 @@ function centos_install_bbr(){
 	yum groupinstall -y "Development Tools"
 	yum install -y git zip unzip
 	rm -rf general
-	[[ ! -e tcp_nanqinlang ]] && mkdir tcp_nanqinlang
-	wget http://script.xmxin.top/3.4.5.1.zip
-	unzip 3.4.5.1.zip
-	rm -rf 3.4.5.1.zip
-	mv general* general
-	mv general/Makefile/Makefile-CentOS tcp_nanqinlang/Makefile
-	mv general/General/CentOS/source/tcp_nanqinlang.c tcp_nanqinlang/tcp_nanqinlang.c
-	cd tcp_nanqinlang
-	make && make install
-	modprobe tcp_nanqinlang
-	bbr_sysctl=$(egrep "net.core.default_qdisc=fq|net.ipv4.tcp_congestion_control=nanqinlang" /etc/sysctl.conf)
+	git clone https://github.com/liberal-boy/tcp_tsunami
+	cd tcp_tsunami
+	echo "obj-m:=tcp_tsunami.o" > Makefile
+	make -C /lib/modules/$(uname -r)/build M=`pwd` modules CC=/usr/bin/gcc
+	insmod tcp_tsunami.ko
+	cp -rf ./tcp_tsunami.ko /lib/modules/$(uname -r)/kernel/net/ipv4
+	depmod -a
+	modprobe tcp_tsunami
+	bbr_sysctl=$(egrep "net.core.default_qdisc=fq|net.ipv4.tcp_congestion_control=tsunami" /etc/sysctl.conf)
 	if [ -z "$bbr_sysctl" ];then
 		echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
-		echo "net.ipv4.tcp_congestion_control=nanqinlang" >> /etc/sysctl.conf
+		echo "net.ipv4.tcp_congestion_control=tsunami" >> /etc/sysctl.conf
 	fi
 	sysctl -p
 	echo
@@ -209,6 +209,8 @@ function centos_install_bbr(){
 }
 
 function ubuntu_debian_install_bbr(){
+	echo 乌班图和德班版本正在制作中...
+	exit;
 	if [ "$(uname -r)" != "4.13.0-17-generic" ];then
 		echo "请替换BBR可用内核重启后再安装BBR!"
 		back_menu
@@ -246,7 +248,7 @@ function ubuntu_debian_install_bbr(){
 
 # 检查BBR运行状态
 function run_state(){
-	isrun=$(lsmod | egrep "nanqinlang")
+	isrun=$(lsmod | egrep "tcp_tsunami")
 	if [ ! -z "$isrun" ];then
 		echo -e "	BBR运行状态：[ $GREEN ok $PLAIN ]"
 	else
