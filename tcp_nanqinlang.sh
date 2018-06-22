@@ -2,7 +2,7 @@
 export PATH=~/bin:~/sbin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 
 ######################################
-#   脚本名:   tcp_tsunami.sh
+#   脚本名:   tcp_nanqinlang.sh
 #   用途:     替换BBR可用内核和安装BBR
 #   制作时间: 2018-6-17 9:45	
 #
@@ -72,7 +72,6 @@ elif [ ! -z "$release7" ];then
 	version=7
 fi
 
-bit=$(uname -m)
 echo "当前系统:$OSED$version"
 sleep 2
 clear
@@ -88,6 +87,7 @@ function swap_kernel(){
 
 # 替换centos6或centos7内核
 function centos_swap_kernel(){
+	bit=$(uname -m)
 	if [ "$(uname -r)" == "4.13.10-1.$release.elrepo.$bit" ];then
 		echo "你的内核已符合要求，无需替换!"
 		back_menu
@@ -130,7 +130,39 @@ function centos_swap_kernel(){
 }
 
 function ubuntu_debian_swap_kernel(){
-	echo 乌班图和德班版本正在制作中...
+	Bit=$(getconf WORD_BIT)
+	if [ $Bit == 32 ] || [ $Bit == 64 ];then
+		bit="amd64"
+	else
+		bit=$(uname -m)
+	fi
+	if [ "$(uname -r)" == "4.13.0-17-generic" ];then
+		echo "你的内核已符合要求，无需替换!"
+		back_menu
+	fi
+	if [ ! -e /Packages ];then
+		mkdir /Packages
+	fi
+	downloadurl="http://kr.archive.ubuntu.com/ubuntu/pool/main/l/linux/"
+	debs="linux-image-4.13.0-17-generic_4.13.0-17.20_$bit.deb linux-headers-4.13.0-17_4.13.0-17.20_all.deb linux-headers-4.13.0-17-generic_4.13.0-17.20_$bit.deb"
+	for i in $debs
+	do
+		wget $downloadurl$debs -O /Packages/$debs
+		dpkg -i /Packages/$debs
+	done
+	installed=$(dpkg -l | egrep "linux-image-4.13.0-17-generic")
+	installed_headers=$(dpkg -l | egrep "linux-headers-4.13.0-17")
+	if [ ! -z "$installed" ] && [ ! -z "$install_headers" ];then
+		echo 内核安装成功
+	else
+		echo 内核安装失败
+		exit;
+	fi
+	echo 正在卸载旧内核
+	rekernel=$(dpkg -l | egrep "linux-image|linux-headers" | egrep -v "linux-image-4.13.0-17-generic|linux-headers-4.13.0-17" | awk '{printf("%s ", $2)}')
+	apt-get purge -y $rekernel
+	update-grub
+	echo 替换完成，请重启系统
 	back_menu
 }
 
@@ -148,22 +180,25 @@ function centos_install_bbr(){
 		echo "请替换BBR可用内核重启后再安装BBR!"
 		back_menu
 	fi
+	yum update -y
 	yum groupremove -y "Development Tools"
 	yum groupinstall -y "Development Tools"
 	yum install -y git
-	rm -rf tcp_tsunami
-	git clone https://github.com/liberal-boy/tcp_tsunami
-	cd tcp_tsunami
-	echo "obj-m:=tcp_tsunami.o" > Makefile
-	make -C /lib/modules/$(uname -r)/build M=`pwd` modules CC=/usr/bin/gcc
-	insmod tcp_tsunami.ko
-	cp -rf ./tcp_tsunami.ko /lib/modules/$(uname -r)/kernel/net/ipv4
-	depmod -a
-	modprobe tcp_tsunami
-	bbr_sysctl=$(egrep "net.core.default_qdisc=fq|net.ipv4.tcp_congestion_control=tsunami" /etc/sysctl.conf)
+	rm -rf general
+	[[ ! -e tcp_nanqinlang ]] && mkdir tcp_nanqinlang
+	wget http://script.xmxin.top/3.4.5.1.zip
+	unzip 3.4.5.1.zip
+	rm -rf 3.4.5.1.zip
+	mv general* general
+	mv general/Makefile/Makefile-CentOS tcp_nanqinlang/Makefile
+	mv general/General/CentOS/source/tcp_nanqinlang.c tcp_nanqinlang/tcp_nanqinlang.c
+	cd tcp_nanqinlang
+	make && make install
+	modprobe tcp_nanqinlang
+	bbr_sysctl=$(egrep "net.core.default_qdisc=fq|net.ipv4.tcp_congestion_control=nanqinlang" /etc/sysctl.conf)
 	if [ -z "$bbr_sysctl" ];then
 		echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
-		echo "net.ipv4.tcp_congestion_control=tsunami" >> /etc/sysctl.conf
+		echo "net.ipv4.tcp_congestion_control=nanqinlang" >> /etc/sysctl.conf
 	fi
 	sysctl -p
 	echo
@@ -173,13 +208,42 @@ function centos_install_bbr(){
 }
 
 function ubuntu_debian_install_bbr(){
-	echo 乌班图和德班版本正在制作中...
+	if [ "$(uname -r)" != "4.13.0-17-generic" ];then
+		echo "请替换BBR可用内核重启后再安装BBR!"
+		back_menu
+	fi
+	apt-get update
+	apt-get install -y build-essential
+	apt-get install -y git
+	[[ ! -e tcp_nanqinlang ]] && mkdir tcp_nanqinlang
+	if [ ! -z "$(grep "stretch")" ];then
+		Makefile="Makefile-Debain9"
+	else
+		Makefile="Makefile-Debian7or8"
+	fi
+	wget http://script.xmxin.top/3.4.5.1.zip
+	unzip 3.4.5.1.zip
+	rm -rf 3.4.5.1.zip
+	mv general* general
+	mv general/Makefile/$Makefile tcp_nanqinlang/Makefile
+	mv general/General/Debian/source/kernel-v4.16/tcp_nanqinlang.c tcp_nanqinlang
+	cd tcp_nanqinlang
+	make && make install
+	bbr_sysctl=$(egrep "net.core.default_qdisc=fq|net.ipv4.tcp_congestion_control=nanqinlang" /etc/sysctl.conf)
+	if [ -z "$bbr_sysctl" ];then
+		echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
+		echo "net.ipv4.tcp_congestion_control=nanqinlang" >> /etc/sysctl.conf
+	fi
+	sysctl -p
+	echo
+	echo "安装成功!"
+	echo
 	back_menu
 }
 
 # 检查BBR运行状态
 function run_state(){
-	isrun=$(lsmod | grep "tcp_tsunami")
+	isrun=$(lsmod | egrep "nanqinlang")
 	if [ ! -z "$isrun" ];then
 		echo -e "	BBR运行状态：[ $GREEN ok $PLAIN ]"
 	else

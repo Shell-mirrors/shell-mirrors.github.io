@@ -52,5 +52,5 @@ $ wget script.xmxin.top/LXDE_VNC_Install.sh -O Install.sh && bash Install.sh
 ```
 9. tcp\_tsunami BBR:
 ```bash
-$ wget script.xmxin.top/tcp_tsunami.sh && bash tcp_tsunami.sh
+$ wget script.xmxin.top/tcp_nanqinlang.sh && bash tcp_nanqinlang.sh
 ```
