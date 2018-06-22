@@ -105,7 +105,7 @@ function centos_swap_kernel(){
 	rpm -ivh /Packages/*rpm
 	yum install -y glibc-headers glibc-devel gcc
 	if [ $version == 6 ];then
-		sed -i "s/^default=[0-9]+/default=0/g" /etc/grub.conf
+		sed -i "s/^default=[0-9]/default=0/g" /boot/grub/grub.conf
 	elif [ $version == 7 ];then
 		grub2-mkconfig -o /boot/grub2/grub.cfg && grub2-set-default 0
 	else
@@ -176,6 +176,7 @@ function install_bbr(){
 
 # centos安装BBR
 function centos_install_bbr(){
+	$bit=$(uname -m)
 	if [ "$(uname -r)" != "4.13.10-1.$release.elrepo.$bit" ];then
 		echo "请替换BBR可用内核重启后再安装BBR!"
 		back_menu
