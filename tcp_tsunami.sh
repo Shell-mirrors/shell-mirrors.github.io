@@ -184,7 +184,7 @@ function centos_install_bbr(){
 		back_menu
 	fi
 	run_check
-	[[ ! -z "$isrun" ]] && echo 魔改BBR正在运行中，无需安装啦！ && exit 0;
+	[[ ! -z "$isrun" ]] && echo 魔改BBR正在运行中，无需安装啦！ && back_menu;
 	yum update -y
 	yum groupremove -y "Development Tools"
 	yum groupinstall -y "Development Tools"
@@ -217,7 +217,7 @@ function ubuntu_debian_install_bbr(){
 		back_menu
 	fi
 	run_check
-	[[ ! -z "$isrun" ]] && echo 魔改BBR正在运行中，无需安装啦！ && exit 0;
+	[[ ! -z "$isrun" ]] && echo 魔改BBR正在运行中，无需安装啦！ && back_menu;
 	apt-get update
 	apt-get install -y build-essential
 	apt-get install -y git zip unzip
