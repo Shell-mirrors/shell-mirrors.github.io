@@ -216,7 +216,7 @@ function ubuntu_debian_install_bbr(){
 	apt-get install -y build-essential
 	apt-get install -y git
 	[[ ! -e tcp_nanqinlang ]] && mkdir tcp_nanqinlang
-	if [ ! -z "$(grep "stretch")" ];then
+	if [ ! -z "$(grep "stretch" /etc/os-release)" ];then
 		Makefile="Makefile-Debain9"
 	else
 		Makefile="Makefile-Debian7or8"
