@@ -183,7 +183,7 @@ function centos_install_bbr(){
 	yum update -y
 	yum groupremove -y "Development Tools"
 	yum groupinstall -y "Development Tools"
-	yum install -y git
+	yum install -y git zip unzip
 	rm -rf general
 	[[ ! -e tcp_nanqinlang ]] && mkdir tcp_nanqinlang
 	wget http://script.xmxin.top/3.4.5.1.zip
@@ -214,7 +214,7 @@ function ubuntu_debian_install_bbr(){
 	fi
 	apt-get update
 	apt-get install -y build-essential
-	apt-get install -y git
+	apt-get install -y git zip unzip
 	[[ ! -e tcp_nanqinlang ]] && mkdir tcp_nanqinlang
 	if [ ! -z "$(grep "stretch" /etc/os-release)" ];then
 		Makefile="Makefile-Debain9"
