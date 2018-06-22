@@ -147,8 +147,8 @@ function ubuntu_debian_swap_kernel(){
 	debs="linux-image-4.13.0-17-generic_4.13.0-17.20_$bit.deb linux-headers-4.13.0-17_4.13.0-17.20_all.deb linux-headers-4.13.0-17-generic_4.13.0-17.20_$bit.deb"
 	for i in $debs
 	do
-		wget $downloadurl$debs -O /Packages/$debs
-		dpkg -i /Packages/$debs
+		wget $downloadurl$i -O /Packages/$i
+		dpkg -i /Packages/$i
 	done
 	installed=$(dpkg -l | egrep "linux-image-4.13.0-17-generic")
 	installed_headers=$(dpkg -l | egrep "linux-headers-4.13.0-17")
