@@ -2,7 +2,7 @@
 export PATH=~/bin:~/sbin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 
 ######################################
-#   脚本名:   tcp_nanqinlang.sh
+#   脚本名:   tcp_tsunami.sh
 #   用途:     替换BBR可用内核和安装BBR
 #   制作时间: 2018-6-17 9:45	
 #
@@ -216,7 +216,7 @@ function ubuntu_debian_install_bbr(){
 	apt-get update
 	apt-get install -y build-essential
 	apt-get install -y git zip unzip
-	[[ ! -e tcp_nanqinlang ]] && mkdir tcp_nanqinlang
+	[[ ! -e tcp_tsunami ]] && mkdir tcp_tsunami
 	if [ ! -z "$(grep "stretch" /etc/os-release)" ];then
 		Makefile="Makefile-Debain9"
 	else
@@ -228,14 +228,14 @@ function ubuntu_debian_install_bbr(){
 	unzip 3.4.5.1.zip
 	rm -rf 3.4.5.1.zip
 	mv general* general
-	mv general/Makefile/$Makefile tcp_nanqinlang/Makefile
-	mv general/General/Debian/source/kernel-v4.16/tcp_nanqinlang.c tcp_nanqinlang
-	cd tcp_nanqinlang
+	mv general/Makefile/$Makefile tcp_tsunami/Makefile
+	mv general/General/Debian/source/kernel-v4.16/tcp_tsunami.c tcp_tsunami
+	cd tcp_tsunami
 	make && make install
-	bbr_sysctl=$(egrep "net.core.default_qdisc=fq|net.ipv4.tcp_congestion_control=nanqinlang" /etc/sysctl.conf)
+	bbr_sysctl=$(egrep "net.core.default_qdisc=fq|net.ipv4.tcp_congestion_control=tsunami" /etc/sysctl.conf)
 	if [ -z "$bbr_sysctl" ];then
 		echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
-		echo "net.ipv4.tcp_congestion_control=nanqinlang" >> /etc/sysctl.conf
+		echo "net.ipv4.tcp_congestion_control=tsunami" >> /etc/sysctl.conf
 	fi
 	sysctl -p
 	echo
