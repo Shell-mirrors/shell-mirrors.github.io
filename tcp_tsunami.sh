@@ -62,8 +62,8 @@ do
 	done
 done
 
-release6=$(grep "CentOS.* 6\.[0-9]" /etc/centos-release)
-release7=$(grep "CentOS.* 7\.[0-9]" /etc/centos-release)
+release6=$([ -e /etc/centos-release ] && grep "CentOS.* 6\.[0-9]" /etc/centos-release)
+release7=$([ -e /etc/centos-release ] && grep "CentOS.* 7\.[0-9]" /etc/centos-release)
 if [ ! -z "$release6" ];then
 	release="el6"
 	version=6
@@ -179,13 +179,17 @@ function ubuntu_debian_install_bbr(){
 
 # 检查BBR运行状态
 function run_state(){
-	isrun=$(sysctl net.ipv4.tcp_congestion_control | grep tsunami)
-	isrun2=$(lsmod | grep "tcp_tsunami")
-	if [ ! -z "$isrun" ] && [ ! -z "$isrun2" ];then
+	isrun=$(lsmod | grep "tcp_tsunami")
+	if [ ! -z "$isrun" ];then
 		echo -e "	BBR运行状态：[ $GREEN ok $PLAIN ]"
 	else
 		echo -e "	BBR运行状态：[ ${RED}fail$PLAIN ]"
 	fi
 }
+
+if [ $UID != 0 ] || [ $USER != root ];then
+	echo "请在超级管理员权限下运行此脚本"
+	exit;
+fi
 
 menu
