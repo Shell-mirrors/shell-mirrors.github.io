@@ -183,10 +183,13 @@ function centos_install_bbr(){
 		echo "请替换BBR可用内核重启后再安装BBR!"
 		back_menu
 	fi
+	run_check
+	[[ ! -z "$isrun" ]] && echo 魔改BBR正在运行中，无需安装啦！ && exit 0;
 	yum update -y
 	yum groupremove -y "Development Tools"
 	yum groupinstall -y "Development Tools"
 	yum install -y git zip unzip
+	rm -rf tcp_tsunami
 	git clone https://github.com/liberal-boy/tcp_tsunami
 	cd tcp_tsunami
 	echo "obj-m:=tcp_tsunami.o" > Makefile
@@ -207,14 +210,18 @@ function centos_install_bbr(){
 	back_menu
 }
 
+# ubuntu or debian安装BBR
 function ubuntu_debian_install_bbr(){
 	if [ "$(uname -r)" != "4.13.0-17-generic" ];then
 		echo "请替换BBR可用内核重启后再安装BBR!"
 		back_menu
 	fi
+	run_check
+	[[ ! -z "$isrun" ]] && echo 魔改BBR正在运行中，无需安装啦！ && exit 0;
 	apt-get update
 	apt-get install -y build-essential
 	apt-get install -y git zip unzip
+	rm -rf tcp_tsunami
 	git clone https://github.com/liberal-boy/tcp_tsunami
 	cd tcp_tsunami
 	echo "obj-m:=tcp_tsunami.o" > Makefile
@@ -236,8 +243,13 @@ function ubuntu_debian_install_bbr(){
 }
 
 # 检查BBR运行状态
-function run_state(){
+
+function run_check(){
 	isrun=$(lsmod | egrep "tcp_tsunami")
+}
+
+function run_state(){
+	run_check
 	if [ ! -z "$isrun" ];then
 		echo -e "	BBR运行状态：[ $GREEN ok $PLAIN ]"
 	else
