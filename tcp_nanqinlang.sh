@@ -130,8 +130,6 @@ function centos_swap_kernel(){
 }
 
 function ubuntu_debian_swap_kernel(){
-	echo 乌班图和德班版本正在制作中...
-	exit;
 	Bit=$(getconf WORD_BIT)
 	if [ $Bit == 32 ] || [ $Bit == 64 ];then
 		bit="amd64"
@@ -208,6 +206,7 @@ function centos_install_bbr(){
 }
 
 function ubuntu_debian_install_bbr(){
+	centos_install_bbr
 	echo 乌班图和德班版本正在制作中...
 	exit;
 	if [ "$(uname -r)" != "4.13.0-17-generic" ];then
