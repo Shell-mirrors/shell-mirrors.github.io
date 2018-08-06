@@ -102,7 +102,11 @@ function centos_swap_kernel(){
 		wget $downloadurl$i -O /Packages/$i
 	done
 	yum remove -y glibc-headers
-	rpm -ivh /Packages/*rpm
+	rpm -e $(rpm -qa | grep kernel | grep -v kernel-ml)
+	for i in $rpms
+	do
+		rpm -ivh /Packages/$i
+	done
 	yum install -y glibc-headers glibc-devel gcc
 	if [ $version == 6 ];then
 		sed -i "s/^default=[0-9]/default=0/g" /boot/grub/grub.conf
@@ -123,7 +127,7 @@ function centos_swap_kernel(){
 		back_menu
 	else
 		echo
-		echo 换内核失败，不要问为什么，可能是人丑吧！
+		echo 换内核失败，请检查依赖关系后在/Packages目录手动替换内核...
 		echo
 		back_menu
 	fi
