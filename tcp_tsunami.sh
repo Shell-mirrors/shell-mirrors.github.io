@@ -103,6 +103,7 @@ function centos_swap_kernel(){
 	done
 	yum remove -y glibc-headers
 	rpm -e $(rpm -qa | grep kernel | grep -v kernel-ml)
+	yum install -y perl
 	for i in $rpms
 	do
 		rpm -ivh /Packages/$i
