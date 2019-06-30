@@ -60,16 +60,16 @@ function install_dep(){
 zewin=https://
 function set32(){
 rm -rf vpnserver*
-wget ${zewin}${zewinz}${ewin}${ewinz}/softether-vpnserver-v4.21-9613-beta-2016.04.24-linux-x86-32bit.tar.gz
-tar -zxvf softether-vpnserver-v4.21-9613-beta-2016.04.24-linux-x86-32bit.tar.gz
+wget https://github.com/SoftEtherVPN/SoftEtherVPN_Stable/releases/download/v4.29-9680-rtm/softether-vpnserver-v4.29-9680-rtm-2019.02.28-linux-x86-32bit.tar.gz
+tar -zxvf softether-vpnserver-v4.29-9680-rtm-2019.02.28-linux-x64-64bit.tar.gz
 rm -f softether-vpnserve*
 }
 
 
 function set64(){
 rm -rf vpnserver*
-wget ${zewin}${zewinz}${ewin}${ewinz}/softether-vpnserver-v4.22-9634-beta-2016.11.27-linux-x64-64bit.tar.gz
-tar -zxvf softether-vpnserver-v4.22-9634-beta-2016.11.27-linux-x64-64bit.tar.gz
+wget https://github.com/SoftEtherVPN/SoftEtherVPN_Stable/releases/download/v4.29-9680-rtm/softether-vpnserver-v4.29-9680-rtm-2019.02.28-linux-x64-64bit.tar.gz
+tar -zxvf softether-vpnserver-v4.29-9680-rtm-2019.02.28-linux-x64-64bit.tar.gz
 rm -f softether-vpnserve*
 }
 
