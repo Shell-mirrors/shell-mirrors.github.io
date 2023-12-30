@@ -1,0 +1,78 @@
+#!/bin/bash
+
+dir=$(cd "${0%/*}";pwd)
+
+function Config(){
+	echo -n 'Please input your user name: '
+	read -e  UserName
+	echo -n 'Please input your user email: '
+	read -e  UserEmail
+
+	git config --global user.name "$UserName"
+	git config --global user.email "$UserEmail"
+}
+
+function Init(){
+	echo -n 'Please input your repository: '
+	read -e  RepoName
+	echo -n 'Please input your user name: '
+	read -e  UserName
+
+	git init
+	git remote add origin git@github.com:$UserName/$RepoName
+}
+
+function Push(){
+	echo -n 'Please input your commit (default: Create): '
+	read -e  CommitInput
+	echo -n 'Please input your branch (default: master): '
+	read -e  BranchInput
+	if [ -z "$CommitInput" ];then
+		CommitInput=Create
+	fi
+	if [ -z "$BranchInput" ];then
+		BranchInput=master
+	fi
+	git add .
+	git commit -m "$CommitInput"
+	git push -f origin $BranchInput
+}
+
+function Update(){
+	curl -L shell-mirrors.github.io/bin/gtools -o /bin/gtools
+	chmod +x /bin/gtools
+	exit
+}
+
+function HelpInfo(){
+	echo "
+	Usage:	$dir/gtools [option]
+
+	-c --config:		Config your github name and email.
+	-i --init:		Init your git.
+	-p --push:		Deploy your repository to github.
+
+	-u --update:		Update this script.
+	-v --version:		Print this script version.
+	-h --help *:		Print help list.
+	"
+}
+
+if [ "$1" == "--config" ] || [ "$1" == "-c" ];then
+	Config
+elif [ "$1" == "--init" ] || [ "$1" == "-i" ];then
+	Init
+elif [ "$1" == "--push" ] || [ "$1" == "-p" ];then
+	Push
+elif [ "$1" == "--update" ] || [ "$1" == "-u" ];then
+	if [ $UID -ne 0 ];then
+		echo 'This option need root permissions run.'
+		echo 'such as: sudo su'
+		exit
+	fi
+	Update
+elif [ "$1" == "--version" ] || [ "$1" == "-v" ];then
+	echo "GTools v1.0.2"
+else
+	HelpInfo
+fi

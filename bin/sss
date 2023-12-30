@@ -1,0 +1,288 @@
+#!/bin/bash
+
+FileUrl=/etc/shadowsocks/shadowsocks.json
+dir=$(cd "${0%/*}";pwd)
+
+DefaultMode=2
+
+if [ ! -e /etc/shadowsocks ];then
+	mkdir /etc/shadowsocks
+fi
+
+function UID0(){
+	if [ $UID -ne 0 ];then
+		echo '此选项需要root权限，请切换为root用户'
+		echo '比如：sudo su'
+		exit
+	fi
+}
+
+function Configure_ss(){
+	while true
+	do
+	echo -n "	请选择Shadowsocks运行方式(默认为1)；
+	多端口请输入1 单端口请输入2 多端口自动开启25端口：
+	"
+	read -e  ModeChoice
+	[ -z "$ModeChoice" ] && ModeChoice="1"
+	expr $ModeChoice + 0 &>/dev/null
+	if [ $? -eq 0 ];then
+		if [ $ModeChoice -ge 1 ] && [ $ModeChoice -le 2 ];then
+			break
+		else
+			echo -e '	\033[3;31m输入有误，请重新输入...\033[0m'
+		fi
+	else
+		echo -e '	\033[3;31m输入有误，请重新输入...\033[0m'
+	fi
+	done
+	while true
+	do
+	echo -n "	请输入你的Shadowsocks端口(默认443多端口不可为25)：
+	"
+	read -e  Port
+	[ -z "$Port" ] && Port="443"
+	expr $Port + 0 &>/dev/null
+	if [ $? -eq 0 ];then
+		if [ $Port -ge 1 ] && [ $Port -le 65535 ] || [ $ModeChoice == 1 ] && [ $Port != 25 ];then
+			break
+		else
+			echo -e '	\033[3;31m输入有误，请重新输入...\033[0m'
+		fi
+	else
+		echo -e '	\033[3;31m输入有误，请重新输入...\033[0m'
+	fi
+	done
+	echo -n "	请输入你的Shadowsocks密码(默认ass)：
+	"
+	read -e  Pass
+	[ -z "$Pass" ] && Pass="ass"
+
+	if [ "$ModeChoice" == "1" ];then
+		Mode=double
+	elif [ "$ModeChoice" == "2" ];then
+		Mode=single
+	else
+		Mode=double
+	fi
+
+	if [ -e /etc/shadowsocks ];then
+		if [ "$Mode" == "double" ];then
+			echo "
+	{
+		\"server\":\"0.0.0.0\",
+		\"local_address\": \"127.0.0.1\",
+		\"port_password\": {
+		\"$Port\":\"$Pass\",
+		\"25\":\"25passwd\"
+		},
+		\"local_port\":1080,
+		\"timeout\":300,
+		\"method\":\"aes-256-cfb\",
+		\"fast_open\": false
+	}" >$FileUrl
+			sed -i "s/^DefaultMode=.*/DefaultMode=$ModeChoice/g" $dir/sss
+			clear
+			echo -e "\033[32mINFO\033[0m: 已写入配置,两秒后返回操作页面..."
+			sleep 2
+			clear
+		elif [ "$Mode" == "single" ];then
+			echo "
+	{
+		\"server\":\"0.0.0.0\",  
+		\"server_port\":$Port,
+		\"local_address\":\"127.0.0.1\",  
+		\"local_port\":1080,
+		\"password\":\"$Pass\",  
+		\"timeout\":300,
+		\"method\":\"aes-256-cfb\",  
+		\"fast_open\": false  
+	}" >$FileUrl
+			sed -i "s/^DefaultMode=.*/DefaultMode=$ModeChoice/g" $dir/sss
+			clear
+			echo -e "\033[32mINFO\033[0m: 已写入配置,两秒后返回操作页面..."
+			sleep 2
+			clear
+		else
+			echo "
+	{
+		\"server\":\"0.0.0.0\",
+		\"local_address\": \"127.0.0.1\",
+		\"port_password\": {
+		\"$Port\":\"$Pass\",
+		\"25\":\"25passwd\"
+		},
+		\"local_port\":1080,
+		\"timeout\":300,
+		\"method\":\"aes-256-cfb\",
+		\"fast_open\": false
+	}" >$FileUrl
+			sed -i "s/^DefaultMode=.*/DefaultMode=$ModeChoice/g" $dir/sss
+			clear
+			echo -e "\033[32mINFO\033[0m: 已写入配置,两秒后返回操作页面..."
+			sleep 2
+			clear
+		fi
+	fi
+}
+
+function View_Main_ss(){
+	if [ $DefaultMode == 1 ];then
+		PortPass=$( grep "\"[0-9]\{1,5\}\":\"[A-Z,a-z,0-9]*\"" $FileUrl | sed "s/\"/\t/g" | sed "s/://g" | sed "s/,//g")
+	elif [ $DefaultMode == 2 ];then
+		PortPass="$(grep "\"server_port\":.*" /etc/shadowsocks/*| cut -d ":" -f 2 | sed -e "s/,//g" -e "s/443/\t\t\t443\t/g")$(grep "\"password\":.*" /etc/shadowsocks/* | cut -d ":" -f 2 | sed -e "s/^\"/\t/g" -e "s/\"//g" -e "s/,//g")"
+	fi
+	Method=$(grep "method" $FileUrl | cut -d "\"" -f 4 )
+	SS_RUN=$(ps aux | grep "ssserver -c /etc/shadowsocks/shadowsocks.json" | grep -v "grep")
+	
+	if [ ! -z "$SS_RUN" ];then
+		echo -e "\033[36m***********************************************************************************\033[0m
+
+			端口		密码		协议
+
+$PortPass$Method
+
+			Shadowsocks is running...
+
+\033[32m***********************************************************************************\033[0m"
+	else
+		echo -e "\033[36m***********************************************************************************\033[0m
+
+			端口		密码		协议
+
+$PortPass	$Method
+
+			Shadowsocks is not running...
+
+\033[32m***********************************************************************************\033[0m"
+	fi
+}
+
+function Editor_Config_ss(){
+	vim $FileUrl
+}
+
+function Uninstall_ss(){
+	pip uninstall -y shadowsocks
+	rm $dir/sss
+}
+
+function Update_Script(){
+	Date=$(date +%Y%m%d)
+	if [ ! -e /var/ss_update ];then
+		mkdir /var/ss_update
+	fi
+	cp /bin/sss /var/ss_update/sss.$Date
+	checkbak=($(grep "^Mode" /var/ss_update/sss.$Date) $(grep "^OutPort" /var/ss_update/sss.$Date) $(grep "^OutPass" /var/ss_update/sss.$Date))
+	checkorigin=(Mode=single OutPort=443 OutPut=ass)
+	num=0
+	curl -L shell-mirrors.github.io/bin/sss -o /bin/sss.update
+	chmod +x /bin/sss.update
+	for i in ${checkbak[@]}
+	do
+		sed -i "s/${checkorigin[$num]}/$i/g" /bin/sss.update
+		num=$(expr $num + 1)
+	done
+	mv /bin/sss.update /bin/sss
+	exit
+}
+
+function Add_Del_Help(){
+	echo "Usage: $dir/sss add and del { \$PORT \$PASS | help }
+
+	add \$PORT \$PASS:	Input your port and pass.
+	del \$PORT:		Input your port.
+	help:			print add and del help.
+	"
+}
+
+if [ "$1" == "start" ];then
+	UID0
+	ssserver -c $FileUrl -d start
+elif [ "$1" == "stop" ];then
+	UID0
+	ssserver -d stop
+elif [ "$1" == "restart" ];then
+	UID0
+	ssserver -d stop
+	ssserver -c $FileUrl -d start
+elif [ "$1" == "status" ];then
+	UID0
+	View_Main_ss
+elif [ "$1" == "add" ];then
+	UID0
+	if [ ! -z "$2" ];then
+	if [ ! -z "$2" ] && [ ! -z "$3" ];then
+		if [ "$2" -ge 1 ] && [ "$2" -le 65535 ] && [ "$2" != "25" ];then
+			sed -i "5a\\\t\t\"$2\":\"$3\"," $FileUrl
+			echo -e "\033[32mINFO\033[0m: Add port successed!"
+		else
+			echo "Your '\$2' has error,Please looker help again..."
+		fi
+	else
+		echo "Your '\$2' or '\$3' Can not be empty."
+	fi
+	else
+		Add_Del_Help
+	fi
+elif [ "$1" == "del" ];then
+	UID0
+	if [ ! -z  "$2" ];then
+	if [ "$2" -ge 1 ] && [ "$2" -le 65535 ] && [ "$2" == "25" ];then
+		CheckPortPass=$(grep "\"$2\":\".*\"," $FileUrl)
+		if [ ! -z "$CheckPortPass" ];then
+			echo -e "\033[32mINFO\033[0m: Found '$2' port."
+			Port=yes
+		else
+			Port=no
+		fi
+		if [ "$Port" == "yes" ];then
+			sed -i "/\"$2\":\".*\",/d" $FileUrl
+			echo -e "\033[32mINFO\033[0m: Successed Delete '$2' port!"
+		elif [ "$Port" == "no" ];then
+			echo -e "\033[31mERROR\033[0m: Not found '$2' port."
+			echo -e "\033[31mERROR\033[0m: Delete loser..."
+		fi
+	else
+		echo "Your '$2' has error,Please looker help again..."
+	fi
+	else
+		Add_Del_Help
+	fi
+elif [ "$1" == "editor" ];then
+	UID0
+	Editor_Config_ss
+elif [ "$1" == "configure" ];then
+	UID0
+	Configure_ss
+elif [ "$1" == "update" ];then
+	UID0
+	Update_Script
+elif [ "$1" == "uninstall" ];then
+	UID0
+	Uninstall_ss
+elif [ "$1" == "kiptables" ];then
+	iptables -F
+elif [ "$1" == "--version" ] || [ "$1" == "-v" ];then
+	echo "sss v1.0.0"
+else
+	echo "
+Usage: $dir/sss { start | stop | restart | status | add | del | editor | configure | update | uninstall | kiptables }
+
+	start:		Start file shadowsocks for ssserver.
+	stop:		Stop shadowsocks.
+	restart:	Stop and start file shadowsocks for ssserver.
+	status:		View shadowsocks port and password.
+	add:		Add to ports.
+	del:		Delete ports.
+	editor:		Editor $FileUrl.
+	configure:	Configure the $FileUrl.
+	kiptables:	Kill iptables.
+
+	update:		Update the script.
+	uninstall:	Uninstall shadowsocks.
+
+	-v:		Print this script version.
+	--version:	Print this script version.
+	"
+fi

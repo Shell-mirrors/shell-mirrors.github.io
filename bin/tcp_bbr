@@ -1,0 +1,53 @@
+#!/bin/bash
+export PATH=/bin:~/bin:/usr/bin:/usr/local/bin:/sbin:~/sbin:/usr/sbin:/usr/local/sbin
+
+if [ $UID -ne 0 ];then
+	echo 'Please use root user run this script.'
+	echo 'such as: sudo su'
+	exit
+fi
+
+dir=$(cd "${0%/*}";pwd)
+find_sysctl_fq=$(cat /etc/sysctl.conf | grep 'net.core.default_qdisc=fq')
+find_sysctl_bbr=$(cat /etc/sysctl.conf | grep 'net.ipv4.tcp_congestion_control=bbr')
+
+function check_bbr(){
+if [ -z "$find_sysctl_fq" ];then
+        echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
+fi
+if [ -z "$find_sysctl_bbr" ];then
+        echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
+fi
+}
+function start_bbr(){
+sysctl -p
+sysctl net.ipv4.tcp_available_congestion_control
+sysctl net.ipv4.tcp_congestion_control
+}
+function status_bbr(){
+status_bbr=$(lsmod | grep "tcp_bbr")
+if [ ! -z "$status_bbr" ];then
+        lsmod | grep tcp_bbr
+        echo tcp_bbr is runing...
+else
+        echo tcp_bbr not runing...
+fi
+}
+function help_info_bbr(){
+echo "Usage: $dir/tcp_bbr { start | status | help }
+
+        start   start tcp_bbr.
+        status  tcp_bbr state.
+        help    tcp_bbr command help.
+        "
+}
+if [ "$1" == "start" ];then
+        start_bbr
+        status_bbr
+elif [ "$1" == "status" ];then
+        status_bbr
+elif [ "$1" == "help" ];then
+        help_info_bbr
+else
+        echo Not found command,Please input tcp_bbr help.
+fi

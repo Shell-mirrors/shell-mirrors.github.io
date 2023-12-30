@@ -1,0 +1,7 @@
+- hosts: all
+  tasks:
+    - name: distribute motd file
+      template:
+        src: templates/motd.j2
+        dest: /etc/motd
+        backup: yes
